@@ -390,7 +390,7 @@ footer{
 </div>
 
 <!-- LOAD -->
-<button id="browse-btn">📁 TAP TO LOAD IMAGE</button>
+<label for="file-input" id="browse-btn">📁 TAP TO LOAD IMAGE</label>
 <p class="or-drop">— or drag &amp; drop anywhere —</p>
 <input type="file" id="file-input" accept="image/*">
 
@@ -515,7 +515,7 @@ footer{
       @robnessofficial
     </a>
     <span style="color:var(--border)">·</span>
-    <a class="footer-link" href="mailto:grounbeeftaxi@gmail.com">Contact</a>
+    <a class="footer-link" href="/cdn-cgi/l/email-protection#d9beabb6acb7bbbcbcbfadb8a1b099beb4b8b0b5f7bab6b4">Contact</a>
     <span style="color:var(--border)">·</span>
     <a class="footer-link" href="/privacy">Privacy Policy</a>
   </div>
@@ -524,7 +524,7 @@ footer{
 
 <canvas id="export-canvas" width="40" height="40" style="display:none"></canvas>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── DOM ──
 const fileInput    = document.getElementById('file-input');
 const browseBtn    = document.getElementById('browse-btn');
@@ -733,7 +733,6 @@ inpH.addEventListener('keydown',e=>{if(e.key==='Enter')applyBtn.click();});
 function clearActiveChip(){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));}
 
 // ── BROWSE & DROP ──
-browseBtn.addEventListener('click',()=>fileInput.click());
 fileInput.addEventListener('change',e=>{if(e.target.files[0])loadFile(e.target.files[0]);});
 
 let dragCounter=0;
@@ -940,10 +939,4 @@ function addThumb(dataUrl,name,w,h,fmt){
   const tag=document.createElement('div');tag.className='thumb-size-tag';
   tag.textContent=w+'×'+h+' · '+fmt;
   wrap.appendChild(c);wrap.appendChild(dl);wrap.appendChild(tag);
-  thumbGrid.appendChild(wrap);
-}
-
-// ── CLEAR ──
-clearBtn.addEventListener('click',()=>{
-  img=null;
-  ctx.clearRect(0,0,W,H);prevCtx.clearRect(0,0,cropW,cro
+  thumbGrid
