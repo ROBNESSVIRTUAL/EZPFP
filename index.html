@@ -939,4 +939,16 @@ function addThumb(dataUrl,name,w,h,fmt){
   const tag=document.createElement('div');tag.className='thumb-size-tag';
   tag.textContent=w+'×'+h+' · '+fmt;
   wrap.appendChild(c);wrap.appendChild(dl);wrap.appendChild(tag);
-  thumbGrid
+  thumbGrid.appendChild(wrap);
+}
+
+// ── CLEAR ──
+clearBtn.addEventListener('click',()=>{
+  img=null;
+  ctx.clearRect(0,0,W,H);prevCtx.clearRect(0,0,cropW,cropH);
+  noImgMsg.style.display='flex';saveBtn.disabled=true;
+  fileInput.value='';canvasWrap.style.cursor='default';
+});
+</script>
+</body>
+</html>
