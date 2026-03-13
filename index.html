@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#111113">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E3S4DGV7MW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E3S4DGV7MW');
+</script>
+
+<!-- SEO -->
+<title>EZ PFP — Free Profile Picture Cropper & Resizer</title>
+<meta name="description" content="Crop and resize any photo to the perfect profile picture size. Twitter, Instagram, Discord, TikTok, LinkedIn and 50+ presets. Free, instant, no upload — runs 100% in your browser.">
+<meta name="keywords" content="profile picture cropper, pfp maker, resize photo for instagram, twitter profile picture size, discord pfp, crop image online, free image cropper">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ezpfp.com">
+
+<!-- Open Graph (social sharing preview) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ezpfp.com">
+<meta property="og:title" content="EZ PFP — Free Profile Picture Cropper">
+<meta property="og:description" content="Crop any photo to the perfect PFP size in seconds. 50+ platform presets. No upload, no login, 100% free. Your photo never leaves your device.">
+<meta property="og:image" content="https://ezpfp.com/og-image.png">
+<meta property="og:site_name" content="EZ PFP">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@robnessofficial">
+<meta name="twitter:title" content="EZ PFP — Free Profile Picture Cropper">
+<meta name="twitter:description" content="Crop any photo to the perfect PFP size in seconds. 50+ platform presets. No upload, no login, 100% free.">
+<meta name="twitter:image" content="https://ezpfp.com/og-image.png">
+
+<!-- Favicon (inline SVG) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23111113'/><text x='4' y='22' font-size='14' font-family='Arial Black,sans-serif' font-weight='900' fill='%23f0e040'>EZ</text><text x='4' y='31' font-size='9' font-family='Arial,sans-serif' fill='%2340ddff'>PFP</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='36' fill='%23111113'/><text x='20' y='110' font-size='80' font-family='Arial Black,sans-serif' font-weight='900' fill='%23f0e040'>EZ</text><text x='22' y='158' font-size='52' font-family='Arial,sans-serif' fill='%2340ddff'>PFP</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Black+Ops+One&family=Bungee+Shade&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#111113;
+  --panel:#18181b;
+  --border:#2a2a30;
+  --accent:#f0e040;
+  --red:#ff4455;
+  --green:#40e0a0;
+  --blue:#40ddff;
+  --text:#d4d4d8;
+  --dim:#52525b;
+  --mono:'Share Tech Mono',monospace;
+  --display:'Black Ops One',cursive;
+  --canvas-size: min(92vw, 480px);
+}
+
+html{ -webkit-text-size-adjust:100%; }
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--mono);
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:16px 12px 48px;
+  gap:12px;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 39px,#ffffff04 39px,#ffffff04 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 39px,#ffffff04 39px,#ffffff04 40px);
+  overscroll-behavior:none;
+}
+
+/* ── DROP OVERLAY ── */
+#drop-overlay{
+  display:none;position:fixed;inset:0;z-index:999;
+  background:rgba(0,0,0,0.88);border:4px dashed var(--accent);
+  flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  pointer-events:none;
+}
+#drop-overlay.active{display:flex;}
+#drop-overlay .di{font-size:4rem;}
+#drop-overlay .dt{font-family:var(--display);font-size:1.6rem;color:var(--accent);letter-spacing:0.1em;}
+
+/* ── LOGO ── */
+.logo-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;padding-top:4px;}
+.logo-6{display:flex;align-items:center;line-height:1;}
+.logo-6 .l6{font-family:'Bungee Shade',sans-serif;font-size:clamp(2.4rem,10vw,3.8rem);line-height:1;letter-spacing:0.02em;}
+.l6.e6{color:#f0e040;}.l6.z6{color:#ff4455;}
+.dot6{width:7px;height:7px;background:#444;border-radius:50%;margin:0 6px;flex-shrink:0;}
+.l6.p6a{color:#40ddff;}.l6.f6{color:#b0ff50;}.l6.p6b{color:#dd55ff;}
+.tagline{font-size:0.52rem;letter-spacing:0.25em;color:var(--dim);text-transform:uppercase;font-family:var(--mono);font-weight:normal;}
+
+/* ── LOAD BUTTON ── */
+#browse-btn{
+  font-family:var(--display);font-size:1.1rem;letter-spacing:0.1em;
+  background:var(--accent);color:#111;border:none;
+  padding:16px 0;cursor:pointer;border-radius:4px;
+  width:100%;max-width:520px;
+  box-shadow:0 0 24px #f0e04033;
+  transition:filter 0.1s;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+#browse-btn:active{filter:brightness(0.9);}
+#browse-btn:hover{filter:brightness(1.12);}
+.or-drop{font-size:0.55rem;color:var(--dim);letter-spacing:0.18em;display:none;}
+#file-input{display:none;}
+
+/* show drag hint only on desktop */
+@media(hover:hover){.or-drop{display:block;}}
+
+/* ── ALWAYS-VISIBLE QUICK SIZE BAR ── */
+.quick-size-bar{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  width:100%;max-width:520px;
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:4px;padding:10px 14px;
+}
+.quick-size-bar label{font-size:0.55rem;letter-spacing:0.15em;color:var(--dim);}
+
+/* ── SIZE BAR (presets dropdown) ── */
+.size-bar{
+  width:100%;max-width:520px;
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:4px;overflow:hidden;
+}
+.size-bar-top{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 12px;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+.size-bar-label{font-size:0.58rem;letter-spacing:0.2em;color:var(--dim);text-transform:uppercase;flex-shrink:0;}
+.cur-dim{
+  font-family:var(--display);font-size:0.85rem;letter-spacing:0.08em;
+  color:var(--accent);margin-left:auto;flex-shrink:0;
+}
+.size-arrow{color:var(--dim);font-size:0.7rem;transition:transform 0.2s;flex-shrink:0;}
+.size-bar.open .size-arrow{transform:rotate(180deg);}
+
+.size-bar-body{display:none;padding:0 12px 12px;}
+.size-bar.open .size-bar-body{display:block;}
+
+/* PRESETS — horizontal scroll */
+.presets-scroll{
+  display:flex;gap:6px;
+  overflow-x:auto;padding:8px 0 10px;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.presets-scroll::-webkit-scrollbar{display:none;}
+.chip{
+  font-family:var(--mono);font-size:0.65rem;letter-spacing:0.04em;
+  background:transparent;color:var(--dim);border:1px solid var(--border);
+  padding:8px 12px;border-radius:3px;cursor:pointer;white-space:nowrap;flex-shrink:0;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  transition:all 0.12s;min-height:36px;display:flex;align-items:center;
+}
+.chip:active{opacity:0.7;}
+.chip.active{background:var(--accent);color:#111;border-color:var(--accent);}
+
+.divider{height:1px;background:var(--border);margin:4px 0 10px;}
+
+/* CUSTOM SIZE ROW */
+.custom-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.custom-row label{font-size:0.55rem;letter-spacing:0.15em;color:var(--dim);}
+.dim-input{
+  font-family:var(--mono);font-size:0.8rem;
+  background:#0e0e10;color:var(--accent);
+  border:1px solid var(--border);border-radius:3px;
+  width:58px;padding:8px 6px;text-align:center;outline:none;
+  -webkit-appearance:none;
+}
+.dim-input:focus{border-color:var(--accent);}
+.dim-x{color:var(--dim);font-size:0.7rem;}
+.apply-btn{
+  font-family:var(--display);font-size:0.68rem;letter-spacing:0.1em;
+  background:var(--green);color:#111;border:none;border-radius:3px;
+  padding:9px 14px;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  min-height:36px;
+}
+.apply-btn:active{filter:brightness(0.9);}
+.lock-wrap{display:flex;align-items:center;gap:6px;}
+.lock-wrap label{font-size:0.55rem;letter-spacing:0.1em;color:var(--dim);cursor:pointer;}
+#lock-ratio{accent-color:var(--accent);width:16px;height:16px;}
+
+/* ── CANVAS WRAP ── */
+.canvas-wrap{
+  position:relative;
+  width:var(--canvas-size);
+  height:var(--canvas-size);
+  background:#0a0a0c;
+  border:1.5px solid var(--border);
+  overflow:hidden;
+  border-radius:4px;
+  flex-shrink:0;
+  touch-action:none;
+}
+#main-canvas{
+  position:absolute;top:0;left:0;
+  width:100%;height:100%;display:block;
+}
+.crop-svg{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  pointer-events:none;
+}
+.no-img-msg{
+  position:absolute;inset:0;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;pointer-events:none;
+}
+.no-img-msg .icon{font-size:2.5rem;}
+.no-img-msg .txt{font-size:0.65rem;letter-spacing:0.15em;color:var(--dim);text-align:center;line-height:2.2;}
+
+/* ── CONTROLS STRIP (below canvas) ── */
+.controls{
+  width:100%;max-width:520px;
+  display:flex;flex-direction:column;gap:10px;
+}
+
+/* ZOOM ROW */
+.zoom-row{
+  display:flex;align-items:center;gap:10px;
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:4px;padding:10px 14px;
+}
+.zoom-lbl{font-size:0.55rem;letter-spacing:0.2em;color:var(--dim);text-transform:uppercase;white-space:nowrap;}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;
+  flex:1;height:4px;background:var(--border);border-radius:2px;outline:none;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;
+  border-radius:50%;background:var(--accent);cursor:pointer;
+  box-shadow:0 0 0 3px #f0e04022;
+}
+.zoom-val{font-size:0.65rem;color:var(--accent);white-space:nowrap;min-width:36px;text-align:right;}
+
+/* FORMAT + QUALITY ROW */
+.fmt-row{
+  display:flex;align-items:center;gap:10px;
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:4px;padding:10px 14px;flex-wrap:wrap;
+}
+.fmt-lbl{font-size:0.55rem;letter-spacing:0.2em;color:var(--dim);text-transform:uppercase;white-space:nowrap;}
+.fmt-toggle{display:flex;gap:0;border:1px solid var(--border);border-radius:3px;overflow:hidden;flex-shrink:0;}
+.fmt-btn{
+  font-family:var(--display);font-size:0.72rem;letter-spacing:0.1em;
+  background:transparent;color:var(--dim);border:none;
+  padding:8px 16px;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  transition:background 0.12s,color 0.12s;min-height:36px;
+}
+.fmt-btn.active{background:var(--accent);color:#111;}
+.fmt-btn:not(.active):active{background:#222;}
+.quality-wrap{display:flex;align-items:center;gap:8px;flex:1;min-width:120px;}
+.quality-wrap.hidden{display:none;}
+.q-lbl{font-size:0.55rem;letter-spacing:0.15em;color:var(--dim);white-space:nowrap;}
+.q-val{font-size:0.62rem;color:var(--accent);min-width:32px;text-align:right;}
+
+/* PREVIEW ROW */
+.preview-row{
+  display:flex;align-items:center;gap:14px;
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:4px;padding:10px 14px;
+}
+.preview-outer{
+  background:repeating-conic-gradient(#222 0% 25%,#1a1a1a 0% 50%) 0 0/8px 8px;
+  border:1px solid var(--border);border-radius:2px;flex-shrink:0;
+}
+#preview-canvas{display:block;image-rendering:pixelated;}
+.preview-info{display:flex;flex-direction:column;gap:4px;}
+.preview-lbl{font-size:0.52rem;letter-spacing:0.2em;color:var(--dim);text-transform:uppercase;}
+.preview-dim{font-family:var(--display);font-size:0.9rem;color:var(--accent);letter-spacing:0.05em;}
+
+/* ACTION BUTTONS */
+.action-row{display:flex;gap:8px;}
+.btn{
+  font-family:var(--display);font-size:1rem;letter-spacing:0.1em;
+  border:none;border-radius:4px;padding:16px 0;
+  cursor:pointer;flex:1;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  transition:filter 0.1s,transform 0.08s;
+}
+.btn:active{transform:scale(0.97);}
+.btn-save{background:var(--accent);color:#111;flex:3;}
+.btn-save:active{filter:brightness(0.9);}
+.btn-save:disabled{opacity:0.25;pointer-events:none;}
+.btn-clear{background:transparent;color:var(--dim);border:1px solid var(--border);flex:1;font-size:0.75rem;}
+.btn-clear:active{color:var(--red);border-color:var(--red);}
+
+/* ── SAVED SECTION ── */
+.saved-section{width:100%;max-width:520px;}
+.saved-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.saved-title{font-family:var(--display);font-size:0.82rem;letter-spacing:0.15em;color:var(--dim);}
+.saved-n{font-size:0.58rem;color:var(--dim);}
+.thumb-grid{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;}
+.thumb-item{position:relative;cursor:pointer;}
+.thumb-item canvas{display:block;image-rendering:pixelated;border:1px solid var(--border);border-radius:2px;}
+.thumb-item:hover canvas,.thumb-item:active canvas{border-color:var(--accent);}
+.thumb-dl{
+  position:absolute;bottom:0;left:0;right:0;
+  background:var(--accent);color:#111;font-family:var(--display);
+  font-size:0.52rem;text-align:center;padding:4px;letter-spacing:0.08em;
+  border-radius:0 0 2px 2px;
+  opacity:0;transition:opacity 0.15s;
+}
+.thumb-item:hover .thumb-dl,.thumb-item:active .thumb-dl{opacity:1;}
+.thumb-size-tag{font-size:0.48rem;color:var(--dim);text-align:center;margin-top:3px;letter-spacing:0.04em;}
+.empty-hint{font-size:0.62rem;color:var(--dim);letter-spacing:0.1em;}
+
+/* ── PRIVACY BADGE ── */
+.privacy-badge{
+  display:flex;align-items:center;gap:7px;
+  font-size:0.55rem;letter-spacing:0.1em;color:var(--dim);
+  border:1px solid var(--border);border-radius:3px;
+  padding:8px 14px;background:var(--panel);
+  width:100%;max-width:520px;
+}
+.privacy-badge .pi{font-size:1rem;flex-shrink:0;}
+.privacy-badge strong{color:var(--text);}
+
+/* ── FOOTER ── */
+footer{
+  width:100%;max-width:520px;
+  border-top:1px solid var(--border);
+  padding-top:16px;margin-top:8px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.footer-links{display:flex;gap:16px;align-items:center;}
+.footer-link{
+  font-size:0.58rem;letter-spacing:0.15em;color:var(--dim);
+  text-decoration:none;text-transform:uppercase;
+  transition:color 0.12s;
+  display:flex;align-items:center;gap:5px;
+}
+.footer-link:hover{color:var(--accent);}
+.footer-note{font-size:0.5rem;letter-spacing:0.1em;color:#333;text-align:center;}
+
+@media(min-width:680px){
+  .how-strip,.privacy-badge,footer{max-width:760px;}
+  .how-icon{font-size:1.6rem;}
+  .how-lbl{font-size:0.55rem;}
+}
+
+@media(min-width:680px){
+  body{gap:16px;}
+  :root{--canvas-size:480px;}
+
+  .workspace-desktop{
+    display:flex;gap:20px;align-items:flex-start;
+    width:100%;max-width:760px;
+  }
+  .controls{width:200px;flex-shrink:0;}
+  .action-row{flex-direction:column;}
+  .btn-save{flex:none;width:100%;}
+  .btn-clear{flex:none;width:100%;}
+  .zoom-row,.fmt-row,.preview-row{padding:10px 12px;}
+  .size-bar,.quick-size-bar{max-width:760px;}
+  #browse-btn{max-width:760px;}
+}
+</style>
+</head>
+<body>
+
+<!-- DROP OVERLAY -->
+<div id="drop-overlay">
+  <div class="di">📥</div>
+  <div class="dt">DROP YOUR IMAGE</div>
+</div>
+
+<!-- LOGO -->
+<div class="logo-wrap">
+  <div class="logo-6">
+    <span class="l6 e6">E</span><span class="l6 z6">Z</span>
+    <div class="dot6"></div>
+    <span class="l6 p6a">P</span><span class="l6 f6">F</span><span class="l6 p6b">P</span>
+  </div>
+  <h1 class="tagline">Free Profile Picture Cropper — Any Size, Any Platform</h1>
+</div>
+
+<!-- LOAD -->
+<button id="browse-btn">📁 TAP TO LOAD IMAGE</button>
+<p class="or-drop">— or drag &amp; drop anywhere —</p>
+<input type="file" id="file-input" accept="image/*">
+
+<!-- PRIVACY BADGE -->
+<div class="privacy-badge">
+  <span class="pi">🔒</span>
+  <span><strong>Your photo never leaves your device.</strong> Everything runs 100% in your browser — nothing is uploaded to any server.</span>
+</div>
+
+<!-- ALWAYS-VISIBLE DIMENSION INPUT -->
+<div class="quick-size-bar">
+  <label for="inp-w">W</label>
+  <input class="dim-input" type="number" id="inp-w" min="1" max="4096" value="40" inputmode="numeric">
+  <span class="dim-x">×</span>
+  <label for="inp-h">H</label>
+  <input class="dim-input" type="number" id="inp-h" min="1" max="4096" value="40" inputmode="numeric">
+  <button class="apply-btn" id="apply-btn">APPLY</button>
+  <div class="lock-wrap">
+    <input type="checkbox" id="lock-ratio">
+    <label for="lock-ratio">LOCK</label>
+  </div>
+  <span class="cur-dim" id="cur-dim">40 × 40</span>
+</div>
+
+<!-- SIZE BAR (presets only) -->
+<div class="size-bar" id="size-bar">
+  <div class="size-bar-top" id="size-bar-top">
+    <span class="size-bar-label">Presets</span>
+    <span class="size-arrow">▼</span>
+  </div>
+  <div class="size-bar-body">
+    <div class="presets-scroll" id="presets"></div>
+  </div>
+</div>
+
+<!-- WORKSPACE (desktop: side by side; mobile: stacked) -->
+<div class="workspace-desktop" id="workspace">
+
+  <!-- CANVAS -->
+  <div class="canvas-wrap" id="canvas-wrap">
+    <canvas id="main-canvas" width="480" height="480"></canvas>
+    <svg class="crop-svg" id="crop-svg" viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <mask id="hole">
+          <rect width="480" height="480" fill="white"/>
+          <rect id="svg-hole" x="190" y="190" width="100" height="100" fill="black"/>
+        </mask>
+      </defs>
+      <rect width="480" height="480" fill="rgba(0,0,0,0.55)" mask="url(#hole)"/>
+      <rect id="svg-box" x="190" y="190" width="100" height="100" fill="none" stroke="#f0e040" stroke-width="1.5"/>
+      <line id="svg-cv" x1="240" y1="190" x2="240" y2="290" stroke="#f0e040" stroke-width="0.8" opacity="0.5"/>
+      <line id="svg-ch" x1="190" y1="240" x2="290" y2="240" stroke="#f0e040" stroke-width="0.8" opacity="0.5"/>
+      <text id="svg-lbl" x="240" y="308" fill="#f0e040" font-size="9"
+        font-family="Share Tech Mono,monospace" text-anchor="middle" opacity="0.65">40 × 40</text>
+    </svg>
+    <div class="no-img-msg" id="no-img-msg">
+      <div class="icon">🖼</div>
+      <div class="txt">TAP BUTTON ABOVE<br>TO LOAD AN IMAGE<br>THEN DRAG TO CROP</div>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls" id="controls">
+
+    <!-- ZOOM -->
+    <div class="zoom-row">
+      <span class="zoom-lbl">Zoom</span>
+      <input type="range" id="zoom" min="5" max="800" value="100">
+      <span class="zoom-val" id="zoom-val">100%</span>
+    </div>
+
+    <!-- FORMAT -->
+    <div class="fmt-row">
+      <span class="fmt-lbl">Format</span>
+      <div class="fmt-toggle">
+        <button class="fmt-btn active" id="fmt-png">PNG</button>
+        <button class="fmt-btn" id="fmt-jpg">JPEG</button>
+      </div>
+      <div class="quality-wrap hidden" id="quality-wrap">
+        <span class="q-lbl">Quality</span>
+        <input type="range" id="quality" min="10" max="100" value="90">
+        <span class="q-val" id="quality-val">90%</span>
+      </div>
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="preview-row">
+      <div class="preview-outer" id="preview-outer">
+        <canvas id="preview-canvas" width="40" height="40"></canvas>
+      </div>
+      <div class="preview-info">
+        <span class="preview-lbl">Live Preview</span>
+        <span class="preview-dim" id="preview-dim">40 × 40 px</span>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="action-row">
+      <button class="btn btn-save" id="save-btn" disabled>⬇ SAVE PNG</button>
+      <button class="btn btn-clear" id="clear-btn">✕</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- SAVED -->
+<div class="saved-section">
+  <div class="saved-head">
+    <span class="saved-title">SAVED CROPS</span>
+    <span class="saved-n" id="saved-n">0 saved</span>
+  </div>
+  <div class="thumb-grid" id="thumb-grid">
+    <span class="empty-hint">Nothing saved yet.</span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <a class="footer-link" href="https://twitter.com/robnessofficial" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.741l7.73-8.835L1.254 2.25H8.08l4.259 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      @robnessofficial
+    </a>
+    <span style="color:var(--border)">·</span>
+    <a class="footer-link" href="mailto:grounbeeftaxi@gmail.com">Contact</a>
+    <span style="color:var(--border)">·</span>
+    <a class="footer-link" href="/privacy">Privacy Policy</a>
+  </div>
+  <p class="footer-note">EZ PFP · Free forever · No account needed · No uploads · Made with ♥</p>
+</footer>
+
+<canvas id="export-canvas" width="40" height="40" style="display:none"></canvas>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ── DOM ──
+const fileInput    = document.getElementById('file-input');
+const browseBtn    = document.getElementById('browse-btn');
+const dropOverlay  = document.getElementById('drop-overlay');
+const sizeBar      = document.getElementById('size-bar');
+const sizeBarTop   = document.getElementById('size-bar-top');
+const presetsEl    = document.getElementById('presets');
+const inpW         = document.getElementById('inp-w');
+const inpH         = document.getElementById('inp-h');
+const applyBtn     = document.getElementById('apply-btn');
+const lockRatio    = document.getElementById('lock-ratio');
+const curDimEl     = document.getElementById('cur-dim');
+const canvasWrap   = document.getElementById('canvas-wrap');
+const mainCanvas   = document.getElementById('main-canvas');
+const ctx          = mainCanvas.getContext('2d');
+const prevCanvas   = document.getElementById('preview-canvas');
+const prevCtx      = prevCanvas.getContext('2d');
+const exportCanvas = document.getElementById('export-canvas');
+const expCtx       = exportCanvas.getContext('2d');
+const svgHole      = document.getElementById('svg-hole');
+const svgBox       = document.getElementById('svg-box');
+const svgCv        = document.getElementById('svg-cv');
+const svgCh        = document.getElementById('svg-ch');
+const svgLbl       = document.getElementById('svg-lbl');
+const zoomSlider   = document.getElementById('zoom');
+const zoomValEl    = document.getElementById('zoom-val');
+const fmtPng       = document.getElementById('fmt-png');
+const fmtJpg       = document.getElementById('fmt-jpg');
+const qualityWrap  = document.getElementById('quality-wrap');
+const qualitySlider= document.getElementById('quality');
+const qualityValEl = document.getElementById('quality-val');
+const previewOuter = document.getElementById('preview-outer');
+const previewDim   = document.getElementById('preview-dim');
+const saveBtn      = document.getElementById('save-btn');
+const clearBtn     = document.getElementById('clear-btn');
+const thumbGrid    = document.getElementById('thumb-grid');
+const savedNEl     = document.getElementById('saved-n');
+const noImgMsg     = document.getElementById('no-img-msg');
+
+// ── CANVAS LOGICAL SIZE ──
+const W=480, H=480, CX=W/2, CY=H/2;
+
+// ── STATE ──
+let cropW=40, cropH=40;
+let displayW=100, displayH=100;
+let cropX, cropY;
+let img=null, imgX=0, imgY=0, scale=1, fname='crop', savedCount=0;
+let dragging=false, dsx=0, dsy=0, isx=0, isy=0;
+let exportFormat='png';
+
+// ── SIZE BAR TOGGLE ──
+sizeBarTop.addEventListener('click', ()=>{
+  sizeBar.classList.toggle('open');
+});
+
+// ── PRESETS ──
+const PRESETS=[
+  // ── PROFILE PICTURES ──
+  {label:'── PFP ──', header:true},
+  {label:'Twitter PFP',w:400,h:400},
+  {label:'Facebook PFP',w:180,h:180},
+  {label:'Instagram PFP',w:320,h:320},
+  {label:'LinkedIn PFP',w:400,h:400},
+  {label:'YouTube PFP',w:800,h:800},
+  {label:'TikTok PFP',w:200,h:200},
+  {label:'Discord PFP',w:128,h:128},
+  {label:'Twitch PFP',w:600,h:600},
+  {label:'Reddit PFP',w:256,h:256},
+  {label:'Pinterest PFP',w:165,h:165},
+  {label:'Snapchat PFP',w:320,h:320},
+  {label:'Telegram PFP',w:512,h:512},
+  {label:'WhatsApp PFP',w:500,h:500},
+  {label:'GitHub PFP',w:460,h:460},
+  {label:'Steam PFP',w:184,h:184},
+  // ── BANNERS / COVERS ──
+  {label:'── BANNERS ──', header:true},
+  {label:'Twitter Banner',w:1500,h:500},
+  {label:'Facebook Cover',w:820,h:312},
+  {label:'Facebook Group',w:1640,h:856},
+  {label:'LinkedIn Banner',w:1584,h:396},
+  {label:'LinkedIn Company',w:1128,h:191},
+  {label:'YouTube Banner',w:2560,h:1440},
+  {label:'YouTube Channel Art',w:2048,h:1152},
+  {label:'Twitch Banner',w:1920,h:480},
+  {label:'Twitch Offline',w:1920,h:1080},
+  {label:'Reddit Banner',w:1920,h:384},
+  {label:'SoundCloud Banner',w:2480,h:520},
+  {label:'Etsy Shop Banner',w:3360,h:840},
+  {label:'Discord Banner',w:960,h:540},
+  {label:'Steam Banner',w:460,h:215},
+  // ── POSTS ──
+  {label:'── POSTS ──', header:true},
+  {label:'IG Square',w:1080,h:1080},
+  {label:'IG Portrait',w:1080,h:1350},
+  {label:'IG Story',w:1080,h:1920},
+  {label:'IG Reel',w:1080,h:1920},
+  {label:'Facebook Post',w:1200,h:630},
+  {label:'Facebook Story',w:1080,h:1920},
+  {label:'Twitter Post',w:1600,h:900},
+  {label:'LinkedIn Post',w:1200,h:627},
+  {label:'Pinterest Pin',w:1000,h:1500},
+  {label:'TikTok Video',w:1080,h:1920},
+  {label:'YouTube Thumb',w:1280,h:720},
+  {label:'Snapchat',w:1080,h:1920},
+  // ── COMMON SIZES ──
+  {label:'── COMMON ──', header:true},
+  {label:'40×40',w:40,h:40},
+  {label:'64×64',w:64,h:64},
+  {label:'128×128',w:128,h:128},
+  {label:'256×256',w:256,h:256},
+  {label:'512×512',w:512,h:512},
+  {label:'1:1 HD',w:1080,h:1080},
+  {label:'16:9 HD',w:1920,h:1080},
+  {label:'4:3',w:800,h:600},
+  {label:'9:16',w:1080,h:1920},
+  {label:'Favicon',w:32,h:32},
+  {label:'Apple Icon',w:180,h:180},
+];
+
+PRESETS.forEach((p,i)=>{
+  if(p.header){
+    const hdr=document.createElement('span');
+    hdr.style.cssText='font-size:0.5rem;letter-spacing:0.2em;color:#3a3a42;text-transform:uppercase;display:flex;align-items:center;padding:0 4px;flex-shrink:0;white-space:nowrap;';
+    hdr.textContent=p.label.replace(/──\s*/g,'').replace(/\s*──/g,'');
+    presetsEl.appendChild(hdr);
+    return;
+  }
+  const chip=document.createElement('button');
+  chip.className='chip'+(i===1?' active':'');
+  chip.textContent=p.label;
+  chip.addEventListener('click',()=>{
+    setDimensions(p.w,p.h);
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+  });
+  presetsEl.appendChild(chip);
+});
+
+// ── SET DIMENSIONS ──
+const MAX_D=260, MIN_D=24;
+function setDimensions(w,h){
+  w=Math.max(1,Math.min(4096,Math.round(w)));
+  h=Math.max(1,Math.min(4096,Math.round(h)));
+  cropW=w; cropH=h;
+  inpW.value=w; inpH.value=h;
+  curDimEl.textContent=w+' × '+h;
+
+  const ratio=w/h;
+  if(ratio>=1){
+    displayW=MAX_D; displayH=Math.round(MAX_D/ratio);
+    if(displayH<MIN_D){displayH=MIN_D;displayW=Math.round(MIN_D*ratio);}
+  } else {
+    displayH=MAX_D; displayW=Math.round(MAX_D*ratio);
+    if(displayW<MIN_D){displayW=MIN_D;displayH=Math.round(MIN_D/ratio);}
+  }
+  cropX=CX-displayW/2; cropY=CY-displayH/2;
+  updateSVG();
+  updatePreviewSize();
+  if(img) render();
+}
+
+function updateSVG(){
+  const x=cropX,y=cropY,w=displayW,h=displayH;
+  [svgHole,svgBox].forEach(el=>{
+    el.setAttribute('x',x);el.setAttribute('y',y);
+    el.setAttribute('width',w);el.setAttribute('height',h);
+  });
+  svgCv.setAttribute('x1',x+w/2);svgCv.setAttribute('y1',y);
+  svgCv.setAttribute('x2',x+w/2);svgCv.setAttribute('y2',y+h);
+  svgCh.setAttribute('x1',x);    svgCh.setAttribute('y1',y+h/2);
+  svgCh.setAttribute('x2',x+w);  svgCh.setAttribute('y2',y+h/2);
+  svgLbl.setAttribute('x',x+w/2);
+  svgLbl.setAttribute('y',y+h+14);
+  svgLbl.textContent=cropW+' × '+cropH;
+}
+
+function updatePreviewSize(){
+  const maxP=64, ratio=cropW/cropH;
+  let pw,ph;
+  if(ratio>=1){pw=maxP;ph=Math.max(1,Math.round(maxP/ratio));}
+  else{ph=maxP;pw=Math.max(1,Math.round(maxP*ratio));}
+  prevCanvas.width=cropW; prevCanvas.height=cropH;
+  prevCanvas.style.width=pw+'px'; prevCanvas.style.height=ph+'px';
+  previewOuter.style.width=pw+'px'; previewOuter.style.height=ph+'px';
+  previewDim.textContent=cropW+' × '+cropH+' px';
+  exportCanvas.width=cropW; exportCanvas.height=cropH;
+}
+
+setDimensions(40,40);
+
+// ── LOCK RATIO ──
+inpW.addEventListener('input',()=>{
+  if(lockRatio.checked&&cropW>0) inpH.value=Math.max(1,Math.round(parseInt(inpW.value)/cropW*cropH));
+  clearActiveChip();
+});
+inpH.addEventListener('input',()=>{
+  if(lockRatio.checked&&cropH>0) inpW.value=Math.max(1,Math.round(parseInt(inpH.value)/cropH*cropW));
+  clearActiveChip();
+});
+applyBtn.addEventListener('click',()=>{
+  clearActiveChip();
+  setDimensions(parseInt(inpW.value)||1,parseInt(inpH.value)||1);
+});
+inpW.addEventListener('keydown',e=>{if(e.key==='Enter')applyBtn.click();});
+inpH.addEventListener('keydown',e=>{if(e.key==='Enter')applyBtn.click();});
+function clearActiveChip(){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));}
+
+// ── BROWSE & DROP ──
+browseBtn.addEventListener('click',()=>fileInput.click());
+fileInput.addEventListener('change',e=>{if(e.target.files[0])loadFile(e.target.files[0]);});
+
+let dragCounter=0;
+document.addEventListener('dragenter',e=>{e.preventDefault();dragCounter++;if(dragCounter===1)dropOverlay.classList.add('active');});
+document.addEventListener('dragleave',e=>{e.preventDefault();dragCounter--;if(dragCounter<=0){dragCounter=0;dropOverlay.classList.remove('active');}});
+document.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='copy';});
+document.addEventListener('drop',e=>{
+  e.preventDefault();dragCounter=0;dropOverlay.classList.remove('active');
+  const f=e.dataTransfer.files[0];
+  if(f&&f.type.startsWith('image/'))loadFile(f);
+  else if(f)alert('Please drop an image file.');
+});
+
+// ── LOAD ──
+function loadFile(file){
+  fname=file.name.replace(/\.[^/.]+$/,'');
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const image=new Image();
+    image.onload=()=>{
+      img=image;
+      scale=Math.min(4,Math.max(displayW/img.naturalWidth,displayH/img.naturalHeight)*1.5);
+      zoomSlider.value=Math.round(scale*100);
+      zoomValEl.textContent=zoomSlider.value+'%';
+      imgX=CX-(img.naturalWidth*scale)/2;
+      imgY=CY-(img.naturalHeight*scale)/2;
+      noImgMsg.style.display='none';
+      saveBtn.disabled=false;
+      // Close size bar on mobile after load to give canvas space
+      if(window.innerWidth<680) sizeBar.classList.remove('open');
+      render();
+    };
+    image.onerror=()=>alert('Could not load image.');
+    image.src=ev.target.result;
+  };
+  reader.onerror=()=>alert('Could not read file.');
+  reader.readAsDataURL(file);
+}
+
+// ── RENDER ──
+function render(){
+  ctx.clearRect(0,0,W,H);
+  if(!img)return;
+  ctx.drawImage(img,imgX,imgY,img.naturalWidth*scale,img.naturalHeight*scale);
+  updatePreview();
+}
+function updatePreview(){
+  if(!img)return;
+  prevCtx.clearRect(0,0,cropW,cropH);
+  prevCtx.drawImage(img,(cropX-imgX)/scale,(cropY-imgY)/scale,displayW/scale,displayH/scale,0,0,cropW,cropH);
+}
+
+// ── CANVAS COORDINATE HELPER ──
+function canvasPos(clientX,clientY){
+  const r=canvasWrap.getBoundingClientRect();
+  return[
+    (clientX-r.left)*(W/r.width),
+    (clientY-r.top)*(H/r.height)
+  ];
+}
+
+// ── MOUSE DRAG ──
+canvasWrap.addEventListener('mousedown',e=>{
+  if(!img)return;
+  e.preventDefault();
+  dragging=true;
+  [dsx,dsy]=canvasPos(e.clientX,e.clientY);
+  isx=imgX;isy=imgY;
+  canvasWrap.style.cursor='grabbing';
+});
+window.addEventListener('mousemove',e=>{
+  if(!dragging)return;
+  const[mx,my]=canvasPos(e.clientX,e.clientY);
+  imgX=isx+mx-dsx; imgY=isy+my-dsy;
+  render();
+});
+window.addEventListener('mouseup',()=>{
+  if(dragging){dragging=false;canvasWrap.style.cursor=img?'grab':'default';}
+});
+
+// ── TOUCH DRAG + PINCH ZOOM ──
+let touches={};
+let pinchStartDist=0, pinchStartScale=0, pinchMidX=0, pinchMidY=0;
+
+canvasWrap.addEventListener('touchstart',e=>{
+  e.preventDefault();
+  Array.from(e.changedTouches).forEach(t=>touches[t.identifier]=t);
+  const pts=Object.values(touches);
+
+  if(pts.length===1){
+    // Single finger — drag
+    dragging=true;
+    [dsx,dsy]=canvasPos(pts[0].clientX,pts[0].clientY);
+    isx=imgX;isy=imgY;
+  } else if(pts.length===2){
+    // Two fingers — pinch
+    dragging=false;
+    const [a,b]=pts;
+    pinchStartDist=Math.hypot(b.clientX-a.clientX,b.clientY-a.clientY);
+    pinchStartScale=scale;
+    const mx=(a.clientX+b.clientX)/2, my=(a.clientY+b.clientY)/2;
+    [pinchMidX,pinchMidY]=canvasPos(mx,my);
+  }
+},{passive:false});
+
+canvasWrap.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  Array.from(e.changedTouches).forEach(t=>touches[t.identifier]=t);
+  const pts=Object.values(touches);
+
+  if(pts.length===1&&dragging){
+    const[mx,my]=canvasPos(pts[0].clientX,pts[0].clientY);
+    imgX=isx+mx-dsx; imgY=isy+my-dsy;
+    render();
+  } else if(pts.length>=2){
+    const[a,b]=pts;
+    const dist=Math.hypot(b.clientX-a.clientX,b.clientY-a.clientY);
+    const ns=Math.min(8,Math.max(0.05,pinchStartScale*(dist/pinchStartDist)));
+    imgX=pinchMidX-(pinchMidX-imgX)*(ns/scale);
+    imgY=pinchMidY-(pinchMidY-imgY)*(ns/scale);
+    scale=ns;
+    zoomSlider.value=Math.round(scale*100);
+    zoomValEl.textContent=zoomSlider.value+'%';
+    render();
+  }
+},{passive:false});
+
+canvasWrap.addEventListener('touchend',e=>{
+  Array.from(e.changedTouches).forEach(t=>delete touches[t.identifier]);
+  if(Object.keys(touches).length===0) dragging=false;
+},{passive:true});
+
+canvasWrap.addEventListener('touchcancel',e=>{
+  Array.from(e.changedTouches).forEach(t=>delete touches[t.identifier]);
+  dragging=false;
+},{passive:true});
+
+// ── SCROLL ZOOM (desktop) ──
+canvasWrap.addEventListener('wheel',e=>{
+  if(!img)return;e.preventDefault();
+  const[mx,my]=canvasPos(e.clientX,e.clientY);
+  const ns=Math.min(8,Math.max(0.05,scale*(e.deltaY<0?1.08:0.925)));
+  imgX=mx-(mx-imgX)*(ns/scale); imgY=my-(my-imgY)*(ns/scale);
+  scale=ns; zoomSlider.value=Math.round(scale*100); zoomValEl.textContent=zoomSlider.value+'%';
+  render();
+},{passive:false});
+
+// ── ZOOM SLIDER ──
+zoomSlider.addEventListener('input',()=>{
+  if(!img)return;
+  const ns=zoomSlider.value/100;
+  imgX=CX-(CX-imgX)*(ns/scale); imgY=CY-(CY-imgY)*(ns/scale);
+  scale=ns; zoomValEl.textContent=zoomSlider.value+'%'; render();
+});
+
+// ── FORMAT ──
+fmtPng.addEventListener('click',()=>{
+  exportFormat='png';
+  fmtPng.classList.add('active'); fmtJpg.classList.remove('active');
+  qualityWrap.classList.add('hidden');
+  saveBtn.textContent='⬇ SAVE PNG';
+});
+fmtJpg.addEventListener('click',()=>{
+  exportFormat='jpeg';
+  fmtJpg.classList.add('active'); fmtPng.classList.remove('active');
+  qualityWrap.classList.remove('hidden');
+  saveBtn.textContent='⬇ SAVE JPEG';
+});
+qualitySlider.addEventListener('input',()=>{qualityValEl.textContent=qualitySlider.value+'%';});
+
+// ── SAVE ──
+saveBtn.addEventListener('click',()=>{
+  if(!img)return;
+  expCtx.clearRect(0,0,cropW,cropH);
+  if(exportFormat==='jpeg'){expCtx.fillStyle='#fff';expCtx.fillRect(0,0,cropW,cropH);}
+  expCtx.drawImage(img,(cropX-imgX)/scale,(cropY-imgY)/scale,displayW/scale,displayH/scale,0,0,cropW,cropH);
+  const mime=exportFormat==='jpeg'?'image/jpeg':'image/png';
+  const quality=exportFormat==='jpeg'?qualitySlider.value/100:undefined;
+  const ext=exportFormat==='jpeg'?'jpg':'png';
+  const dataUrl=exportCanvas.toDataURL(mime,quality);
+  const dlName=`${fname}_${cropW}x${cropH}_${Date.now()}.${ext}`;
+  const a=document.createElement('a');a.download=dlName;a.href=dataUrl;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  addThumb(dataUrl,dlName,cropW,cropH,ext.toUpperCase());
+});
+
+function addThumb(dataUrl,name,w,h,fmt){
+  if(savedCount===0)thumbGrid.innerHTML='';
+  savedCount++;savedNEl.textContent=savedCount+' saved';
+  const maxP=72,ratio=w/h;
+  let pw,ph;
+  if(ratio>=1){pw=maxP;ph=Math.max(4,Math.round(maxP/ratio));}
+  else{ph=maxP;pw=Math.max(4,Math.round(maxP*ratio));}
+  const wrap=document.createElement('div');wrap.className='thumb-item';
+  const c=document.createElement('canvas');c.width=w;c.height=h;
+  c.style.width=pw+'px';c.style.height=ph+'px';
+  const tc=c.getContext('2d');const i=new Image();
+  i.onload=()=>tc.drawImage(i,0,0);i.src=dataUrl;
+  const dl=document.createElement('div');dl.className='thumb-dl';dl.textContent='↓ DL';
+  dl.addEventListener('click',()=>{
+    const a=document.createElement('a');a.download=name;a.href=dataUrl;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+  });
+  const tag=document.createElement('div');tag.className='thumb-size-tag';
+  tag.textContent=w+'×'+h+' · '+fmt;
+  wrap.appendChild(c);wrap.appendChild(dl);wrap.appendChild(tag);
+  thumbGrid.appendChild(wrap);
+}
+
+// ── CLEAR ──
+clearBtn.addEventListener('click',()=>{
+  img=null;
+  ctx.clearRect(0,0,W,H);prevCtx.clearRect(0,0,cropW,cro
