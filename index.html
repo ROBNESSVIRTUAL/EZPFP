@@ -736,6 +736,7 @@ qualitySlider.addEventListener('input',function(){qualityValEl.textContent=quali
 saveBtn.addEventListener('click',function(){
   if(!img)return;
   expCtx.clearRect(0,0,cropW,cropH);
+  expCtx.imageSmoothingEnabled = false;
   if(exportFormat==='jpeg'){expCtx.fillStyle='#fff';expCtx.fillRect(0,0,cropW,cropH);}
   expCtx.drawImage(img,(cropX-imgX)/scale,(cropY-imgY)/scale,displayW/scale,displayH/scale,0,0,cropW,cropH);
   var mime=exportFormat==='jpeg'?'image/jpeg':'image/png';
